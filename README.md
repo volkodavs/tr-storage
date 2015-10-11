@@ -1,4 +1,4 @@
-# Code Challange
+# Code Challenge
 
 ## Task
 
