@@ -7,14 +7,14 @@ The transactions to be stored have a type and an amount. The service should supp
 
 ### Endpoint
 
-Base path = `/transactionservice`
+**Base path** = `/transactionservice`
 
 |HTTP Method| URL| Request| Response |
 |---|--- | --- | --- | --- 
-| PUT | `/transaction/$transaction_id` | `{ "amount":double, "type":string,"parent_id":long }`|`{ "status": "ok" }`|
-| GET | `/transaction/$transaction_id` | | `{ "amount":double,"type":string,"parent_id":long }`| 
-| GET | `/types/$type` | | `[ long, long, .... ]`|
-| GET | `/sum/$transaction_id` | | `{"sum", double }`|
+| PUT | `/transaction/$transaction_id` | `{"amount":double, "type":string, "parent_id":long}`|`{"status": "ok"}`|
+| GET | `/transaction/$transaction_id` | | `{"amount":double, "type":string, "parent_id":long}`| 
+| GET | `/types/$type` | | `[long, long, .... ]`|
+| GET | `/sum/$transaction_id` | | `{"sum", double}`|
 
 * **transaction_id** is a long specifying a new transaction
 * **amount** is a double specifying the amount
