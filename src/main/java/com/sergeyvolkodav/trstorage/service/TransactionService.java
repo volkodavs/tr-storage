@@ -4,6 +4,7 @@ package com.sergeyvolkodav.trstorage.service;
 import com.sergeyvolkodav.trstorage.model.TransactionModel;
 import com.sergeyvolkodav.trstorage.repository.TrRepository;
 import com.sergeyvolkodav.trstorage.rest.data.TransactionData;
+import com.sergeyvolkodav.trstorage.rest.exception.AppTRStoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,22 +24,22 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public void saveTransaction(TransactionData transactionData) {
-        log.info("Save new transaction, id: {}", transactionData.getId());
+        log.info("Save new transaction");
         TransactionModel newTransaction = mapTransactionDataToEntity(transactionData);
 
-        String parentPath = "";
-        if (transactionData.getParentId() != null) {
-            TransactionModel parentTransaction = transactionRepository.findById(transactionData.getParentId());
-            parentPath = parentTransaction.getMpath();
-        }
-        newTransaction.setMpath(buildPath(parentPath, transactionData.getId()));
+        String parentPath = getParentPath(transactionData);
+        PathBuilder pathBuilder = new PathBuilder(newTransaction.getId().toString(), parentPath);
+        newTransaction.setMpath(pathBuilder.getNewPath());
         transactionRepository.save(newTransaction);
     }
 
     @Override
     public TransactionData getTransactionDataById(Long id) {
         TransactionModel transactionModel = transactionRepository.findById(id);
-        return mapEntityToTransactionData(transactionModel);
+        if (transactionModel != null) {
+            return mapEntityToTransactionData(transactionModel);
+        }
+        throw new AppTRStoreException(String.format("Transaction with id %d not found", id));
     }
 
     @Override
@@ -52,18 +53,27 @@ public class TransactionService implements ITransactionService {
     @Override
     public Double getTransactionSum(Long id) {
         TransactionModel transactionModel = transactionRepository.findById(id);
-        return transactionRepository.sumParentByPath(transactionModel.getMpath());
+        if (transactionModel != null) {
+            return transactionRepository.sumParentByPath(transactionModel.getMpath());
+        }
+        throw new AppTRStoreException(String.format("Transaction with id %d not found", id));
     }
 
     /**
-     * Build path
+     * Find for transaction parent path
      *
-     * @param parentPath parent Path
-     * @param id         new id
-     * @return Path for new id
+     * @param transactionData Input transaction
+     * @return Return parent path
      */
-    private String buildPath(String parentPath, Long id) {
-        return parentPath + "/" + id.toString();
+    private String getParentPath(TransactionData transactionData) {
+        if (transactionData.getParentId() != null) {
+            TransactionModel parentTransaction = transactionRepository.findById(transactionData.getParentId());
+            if (parentTransaction != null) {
+                return parentTransaction.getMpath();
+            }
+            throw new AppTRStoreException(String.format("Transaction with id %d not found", transactionData.getId()));
+        }
+        return "";
     }
 
     /**
@@ -94,5 +104,36 @@ public class TransactionService implements ITransactionService {
         transactionData.setParentId(transactionModel.getParentId());
         transactionData.setType(transactionModel.getType());
         return transactionData;
+    }
+
+    /**
+     * Builder Path class
+     */
+    public class PathBuilder {
+
+        private String curNode;
+        private String parentPath;
+        private String newPath;
+
+        public PathBuilder(String curNode, String parentPath) {
+            this.curNode = curNode;
+            this.parentPath = parentPath;
+            checkForCycling();
+            setNewPath();
+        }
+
+        private void setNewPath() {
+            newPath = parentPath + "/" + curNode;
+        }
+
+        public String getNewPath() {
+            return newPath;
+        }
+
+        public void checkForCycling() {
+            if (parentPath.contains(curNode)) {
+                throw new AppTRStoreException("Detect cycling graph");
+            }
+        }
     }
 }

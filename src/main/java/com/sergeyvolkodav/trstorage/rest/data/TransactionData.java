@@ -21,14 +21,6 @@ public class TransactionData {
 
     private Long parentId;
 
-
-    public TransactionData(Long id, Double amount, String type, Long parentId) {
-        this.amount = amount;
-        this.type = type;
-        this.parentId = parentId;
-        this.id = id;
-    }
-
     public TransactionData() {
     }
 

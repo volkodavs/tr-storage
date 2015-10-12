@@ -16,7 +16,7 @@ import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
 
 
-public class TrControllerTest extends TrTest {
+public class TransactionalControllerTest extends TrTest {
 
     private MockMvc mockMvc;
 
@@ -62,6 +62,17 @@ public class TrControllerTest extends TrTest {
     }
 
     @Test
+    public void testGetTransactionSum() {
+        given().
+                contentType("application/json").
+                when().
+                get("/sum/1").
+                then().
+                statusCode(HttpServletResponse.SC_OK).
+                contentType("application/json");
+    }
+
+    @Test
     public void testGetListTransactionsByType() {
         given().
                 contentType("application/json").
@@ -73,14 +84,41 @@ public class TrControllerTest extends TrTest {
     }
 
     @Test
-    public void testGetTransactionSum() {
+    public void testInvalidSum() {
         given().
                 contentType("application/json").
                 when().
-                get("/sum/1").
+                get("/sum/101").
                 then().
-                statusCode(HttpServletResponse.SC_OK).
-                contentType("application/json");
+                statusCode(HttpServletResponse.SC_BAD_REQUEST).
+                contentType("application/json").
+                body("status", equalTo("error"));
     }
 
+    @Test
+    public void testInvalidType() {
+        given().
+                contentType("application/json").
+                when().
+                get("/transaction/101").
+                then().
+                statusCode(HttpServletResponse.SC_BAD_REQUEST).
+                contentType("application/json").
+                body("status", equalTo("error"));
+    }
+
+    @Test
+    public void testInvalidSaveTransaction() {
+        String newTransaction = "{ \"amount\":44.35}";
+
+        given().
+                contentType("application/json").
+                body(newTransaction).
+                when().
+                put("/transaction/99").
+                then().
+                statusCode(HttpServletResponse.SC_BAD_REQUEST).
+                contentType("application/json").
+                body("status", equalTo("error"));
+    }
 }

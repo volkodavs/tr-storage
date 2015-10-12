@@ -83,6 +83,7 @@ dependencies {
     testCompile "com.jayway.restassured:spring-mock-mvc:2.5.0"
     testCompile "com.github.springtestdbunit:spring-test-dbunit:1.2.1"
     testCompile "org.dbunit:dbunit:2.5.1"
+    testCompile "javax.el:el-api:2.2.1-b04"
 }
 
 task buildDocker(type: Docker, dependsOn: "build") {

@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface TrRepository extends CrudRepository<TransactionModel, Long> {
 
-
     List<TransactionModel> findAll();
 
     List<TransactionModel> findByTypeIgnoreCase(String type);
