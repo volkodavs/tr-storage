@@ -1,7 +1,3 @@
-tomcat:
-  build: ./docker-base/tomcat/
-  container_name: tomcat8
-
 webapp:
   image: volkodav/trstorage
   container_name: webapp
