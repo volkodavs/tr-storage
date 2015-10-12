@@ -92,11 +92,12 @@ public class TransactionModel {
 
     @Override
     public String toString() {
-        return "transactional Storage{" +
+        return "TransactionModel{" +
                 "id=" + id +
                 ", amount=" + amount +
                 ", type='" + type + '\'' +
                 ", parentId=" + parentId +
+                ", mpath='" + mpath + '\'' +
                 '}';
     }
 }
