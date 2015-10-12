@@ -1,0 +1,23 @@
+tomcat:
+  build: ./docker-base/tomcat/
+  container_name: tomcat8
+
+webapp:
+  image: volkodav/trstorage
+  container_name: webapp
+  ports:
+     - "8080:8080"
+  links:
+     - postgres:postgres
+
+postgres:
+  build: ./docker-base/postgres/
+  container_name: postgres
+  ports:
+    - "5432:5432"
+  environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=1q2w3e4r
+  volumes:
+    - ./docker-base/postgres/init:/docker-entrypoint-initdb.d:ro
+#    - ./docker-data/postgres/data:/var/lib/postgresql/data

@@ -1,0 +1,10 @@
+#Idea
+.idea/*
+*.iml
+
+#Gradle:
+build/*
+.gradle
+
+#MacOS
+.DS_Store

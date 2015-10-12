@@ -1,0 +1,83 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/data/jpa
+        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        ">
+
+    <bean id="propertyConfigurer" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:application.properties</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!-- Set base package of your entities -->
+        <property name="packagesToScan" value="com.sergeyvolkodav.trstorage.model"/>
+        <!-- Set share cache mode -->
+        <property name="sharedCacheMode" value="ENABLE_SELECTIVE"/>
+        <!-- Set validation mode -->
+        <property name="validationMode" value="NONE"/>
+        <property name="jpaVendorAdapter">
+            <bean id="hibernateJpaVendorAdapter"
+                  class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <!-- Set JPA properties -->
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</prop>
+                <prop key="javax.persistence.schema-generation.database.action">none</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Configure the transaction manager bean -->
+    <bean id="transactionManager"
+          class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <!-- Enable annotation driven transaction management -->
+    <tx:annotation-driven/>
+
+    <jpa:repositories base-package="com.sergeyvolkodav.trstorage.repository"/>
+
+
+    <bean id="dataSourceTx" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="dataSourceConfig"/>
+    </bean>
+
+    <bean id="dataSourceConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="dataSourceClassName" value="com.impossibl.postgres.jdbc.PGDataSource"/>
+        <property name="dataSourceProperties">
+            <props>
+                <prop key="host">${database.host}</prop>
+                <prop key="port">${database.port}</prop>
+                <prop key="database">${database.name}</prop>
+                <prop key="user">${database.user}</prop>
+                <prop key="password">${database.password}</prop>
+            </props>
+        </property>
+        <property name="autoCommit" value="${database.autoCommit}"/>
+        <property name="maximumPoolSize" value="${database.maximumPoolSize}"/>
+        <property name="connectionTimeout" value="${database.connectionTimeout}"/>
+    </bean>
+
+    <bean id="dataSource"
+          class="com.zaxxer.hikari.HikariDataSource">
+        <constructor-arg ref="dataSourceTx"/>
+    </bean>
+
+</beans>

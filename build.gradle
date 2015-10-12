@@ -1,0 +1,110 @@
+group 'sergeyvolkodav.com'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
+        classpath 'org.flywaydb:flyway-gradle-plugin:3.2.1'
+    }
+}
+
+apply plugin: 'docker'
+apply plugin: "java"
+apply plugin: "idea"
+apply plugin: "war"
+apply plugin: "jetty"
+apply plugin: "jacoco"
+apply plugin: "org.flywaydb.flyway"
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination "${buildDir}/jacocoHtml"
+    }
+}
+
+flyway {
+    driver = 'com.impossibl.postgres.jdbc.PGDriver'
+    url = 'jdbc:pgsql://192.168.99.100/postgres'
+    user = 'postgres'
+    password = '1q2w3e4r'
+}
+
+ext {
+    springFrameworkVersion = "4.2.0.RELEASE"
+    springSecurityVersion = "4.0.2.RELEASE"
+    springSecurityOauth2Version = "2.0.7.RELEASE"
+    slf4jVersion = "1.7.12"
+    fasterxmlJacksonVersion = "2.6.0"
+}
+war {
+    war.archiveName "trstorage.war"
+}
+
+dependencies {
+    compile "org.springframework:spring-context:${springFrameworkVersion}"
+    compile "org.springframework:spring-webmvc:${springFrameworkVersion}"
+    compile "org.springframework:spring-aspects:${springFrameworkVersion}"
+    providedCompile "javax.servlet:javax.servlet-api:3.1.0"
+    compile "org.hibernate:hibernate-validator:5.2.1.Final"
+    compile "org.springframework.data:spring-data-jpa:1.8.2.RELEASE"
+    compile "org.hibernate:hibernate-entitymanager:4.3.11.Final"
+    compile "com.h2database:h2:1.4.182"
+    compile "com.zaxxer:HikariCP:2.4.0"
+    compile "com.impossibl.pgjdbc-ng:pgjdbc-ng:0.5"
+    compile "org.flywaydb:flyway-core:3.2.1"
+    compile "com.fasterxml.jackson.core:jackson-databind:${fasterxmlJacksonVersion}"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${fasterxmlJacksonVersion}"
+    compile "org.slf4j:jcl-over-slf4j:$slf4jVersion"
+    compile 'ch.qos.logback:logback-classic:1.1.3'
+    compile "org.slf4j:log4j-over-slf4j:${slf4jVersion}"
+    compile "org.logback-extensions:logback-ext-spring:0.1.1"
+    compile "com.h2database:h2:1.4.182"
+    compile "io.springfox:springfox-swagger2:2.1.2"
+    compile "org.flywaydb:flyway-core:3.2.1"
+    testCompile "junit:junit:4.12"
+    testCompile "org.springframework:spring-test:${springFrameworkVersion}"
+    testCompile "org.hamcrest:hamcrest-library:1.3"
+    testCompile "com.jayway.restassured:rest-assured:2.5.0"
+    testCompile "com.jayway.restassured:spring-mock-mvc:2.5.0"
+    testCompile "com.github.springtestdbunit:spring-test-dbunit:1.2.1"
+    testCompile "org.dbunit:dbunit:2.5.1"
+}
+
+task buildDocker(type: Docker, dependsOn: "build") {
+    tag = "volkodav/$rootProject.name"
+    tagVersion = 'latest'
+    dockerfile = file('src/main/docker/Dockerfile')
+    push = false
+    doFirst {
+        println "Building docker image $tag:$tagVersion"
+        println stageDir
+        copy {
+            from "src/main/docker/"
+            into stageDir
+        }
+        copy {
+            from "build/libs/trstorage.war"
+            into stageDir
+        }
+    }
+}
+
+
+
+
+

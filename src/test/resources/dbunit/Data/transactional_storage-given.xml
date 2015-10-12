@@ -1,0 +1,7 @@
+<dataset>
+    <transaction_storage id="1" amount="100" type="car" mpath="/1"/>
+    <transaction_storage id="2" amount="200" type="car" parentid="1" mpath="/1/2" />
+    <transaction_storage id="3" amount="300" type="car" parentid="2" mpath="/1/2/3" />
+    <transaction_storage id="4" amount="400" type="bank" mpath="/4"/>
+    <transaction_storage id="5" amount="500" type="bank" parentid="4" mpath="/4/5" />
+</dataset>
