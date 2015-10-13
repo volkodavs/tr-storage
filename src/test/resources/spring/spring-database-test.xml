@@ -26,7 +26,6 @@
         <property name="locations">
             <list>
                 <value>classpath:application.properties</value>
-                <!--<value>${customPropertiesLocation}</value>-->
             </list>
         </property>
     </bean>
