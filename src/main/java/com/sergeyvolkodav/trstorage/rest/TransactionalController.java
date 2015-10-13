@@ -31,7 +31,7 @@ public class TransactionalController {
         return new ResponseData(AppStatusCodes.StatusOk);
     }
 
-    @RequestMapping(value = "/transaction/{id}", method = RequestMethod.GET, headers = "content-type=application/json")
+    @RequestMapping(value = "/transaction/{id}", method = RequestMethod.GET)
     public TransactionData getTransaction(@PathVariable("id") Long transactionId) {
         return transactionService.getTransactionDataById(transactionId);
     }
