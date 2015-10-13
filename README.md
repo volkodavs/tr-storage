@@ -7,7 +7,7 @@ The transactions to be stored have a type and an amount. The service should supp
 
 ### Endpoint
 
-**Base path** = `/transactionservice`
+Base path = `/transactionservice`
 
 |HTTP Method| URL| Request| Response |
 |---|--- | --- | --- | --- 
@@ -20,5 +20,38 @@ The transactions to be stored have a type and an amount. The service should supp
 * **amount** is a double specifying the amount
 * **type is** a string specifying a type of the transaction.
 * **parent_id** is an optional long that may specify the parent transaction of this transaction.
+
+## Implementation
+
+
+### Build Application 
+
+```
+$ gradle buildDocker
+```
+
+### Start Application
+
+```
+$ docker-compose up
+```
+
+### API Endpoint
+
+```
+http://{ip}:{port}/trstorage/swagger/
+```
+
+![](http://i.imgur.com/0sbFO1I.png)
+
+
+### Performance Test
+
+```
+$ jmeter -t src/test/resources/jmeter/tr_store.jmx
+```
+
+![] (http://i.imgur.com/JuHJVrG.png)
+
 
 
