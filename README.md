@@ -1,6 +1,7 @@
+[![Build Status](https://travis-ci.org/volkodavs/tr-storage.svg)](https://travis-ci.org/volkodavs/tr-storage)
+
 # Code Challenge
 
-[![Build Status](https://travis-ci.org/volkodavs/tr-storage.svg)](https://travis-ci.org/volkodavs/tr-storage)
 
 ## Task
 
