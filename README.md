@@ -1,5 +1,7 @@
 # Code Challenge
 
+[![Build Status](https://travis-ci.org/volkodavs/tr-storage.svg)](https://travis-ci.org/volkodavs/tr-storage)
+
 ## Task
 
 Build RESTful web service that stores some transactions and returns information about those transactions.
