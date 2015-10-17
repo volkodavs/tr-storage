@@ -90,7 +90,7 @@ task buildDocker(type: Docker, dependsOn: "build") {
     tag = "volkodav/$rootProject.name"
     tagVersion = 'latest'
     dockerfile = file('src/main/docker/Dockerfile')
-    push = false
+    push = this.properties['docker.push']
     doFirst {
         println "Building docker image $tag:$tagVersion"
         println stageDir

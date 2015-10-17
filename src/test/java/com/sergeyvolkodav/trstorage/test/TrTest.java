@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
         TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @Transactional
-@DatabaseSetup("/dbunit/data/transactional_storage-given.xml")
+@DatabaseSetup("classpath:dbunit/transactional_storage-given.xml")
 public class TrTest {
 
     @Test

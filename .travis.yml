@@ -1,0 +1,11 @@
+sudo: required
+services:
+  - docker
+
+language: java
+
+before_install:
+  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+install: ./gradlew buildDocker -Pdocker.push=true
+jdk:
+  - oraclejdk8
