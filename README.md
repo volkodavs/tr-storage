@@ -1,4 +1,5 @@
 # Code Challenge
+[![](https://badge.imagelayers.io/volkodav/trstorage:latest.svg)](https://imagelayers.io/?images=volkodav/trstorage:latest )
 [![Build Status](https://travis-ci.org/volkodavs/tr-storage.svg)](https://travis-ci.org/volkodavs/tr-storage)
 
 ## Task
