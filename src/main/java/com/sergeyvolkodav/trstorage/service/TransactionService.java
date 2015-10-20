@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -45,9 +46,7 @@ public class TransactionService implements ITransactionService {
     @Override
     public List<Long> getTransactionListByType(String type) {
         List<TransactionModel> transactionEntityList = transactionRepository.findByTypeIgnoreCase(type);
-        List<Long> transactions = new ArrayList<>();
-        transactionEntityList.stream().forEach(e -> transactions.add(e.getId()));
-        return transactions;
+        return transactionEntityList.stream().map(TransactionModel::getId).collect(Collectors.toList());
     }
 
     @Override
